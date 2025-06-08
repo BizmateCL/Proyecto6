@@ -70,7 +70,7 @@ exports.login = async (req, res) => {
     });
   }
 };
-
+//VERIFICAR USUARIO
 exports.verifyUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -82,3 +82,45 @@ exports.verifyUser = async (req, res) => {
     });
   }
 };
+//actualizar usuario
+exports.updateUserById = async (req, res) => {
+ const { username, email, password } = req.body;
+  try {
+    let updateFields = { username, email };
+
+    // Si se envía un nuevo password, hashearlo
+    if (password) {
+      const salt = await bcryptjs.genSalt(10);
+      updateFields.password = await bcryptjs.hash(password, salt);
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      req.params.id,
+      updateFields,
+      { new: true, runValidators: true }
+    );
+    if (!updateUser) {
+      return res.status(404).json({
+        message: "Usuario no encontrado",
+      });
+    }
+    return res.status(200).json({ updateUser });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Hubo un error actualizando el usuario",
+      error: error.message,
+    });
+  }
+}
+//obtener todos los usuarios
+// app.get("/users", async (req, res) => {
+//   try {
+//     const users = await User.find({}); //busca todos los usuarios
+//     return res.status(200).json({ users }); //devuelve el estado 200 y los usuarios
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "Error al obtener los usuarios",
+//       error: error.message, //dato tecnico con info del error
+//     }); //status 500 error del server
+//   }
+// });
