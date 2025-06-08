@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
         }
         
     } catch (error) {
-        res.json({msg:'Ocurrio un error'})
+        res.json({msg:'Ocurrio un error al intentar verificar usuario'})
     }
 
 }

@@ -1,29 +1,21 @@
-//archivo principal
-//se agregagar las rutas, todo...
 require("dotenv").config();
 const express = require("express"); //tiene que ver con las rutas de la api.
-const bcryptjs = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const auth = require("./middleware/authorization"); //importar el middleware de autorizacion, la funcion auth
+const cors = require("cors"); 
 const connectDB = require("./config/db"); //conectar a la base de datos
-//const userRouter= require('./routes/user.routes');//importar las rutas de usuario
-//const guitarRouter= require('./routes/guitar.routes');//importar las rutas de guitarra
+const userRouter= require('./routes/user.routes');
+const guitarRouter= require('./routes/guitar.routes');//importar las rutas de guitarra
 
 const PORT = process.env.PORT || 5000; //puerto por defecto
-
 const User = require("./models/user.model"); //importar el modelo de usuario
 const Guitar = require("./models/guitar.model"); //importar el modelo de guitarra
-
 //middleware
-const app = express(); //nos crea una aplicacion.
-connectDB(); //conectar a la base de datos
+const app = express(); 
+connectDB();
+app.use(cors())
 
-//middleware.validacion que va en la mitad
-app.use(express.json()); //para que el servidor pueda entender el json que le enviamos
-//es un middeware, que convierte la peticion a tipo json
-//app.use('/api/users',userRouter)
-//app.use('/api/guitars',guitarRouter)
-
+app.use(express.json()); 
+app.use('/api/users',userRouter)//localhost:3000/api/users
+//app.use('/api/guitars',guitarRouter)//localhost:3000/api/guitars
 app.get("/guitars", async (req, res) => {
   //req y res peticion y respuesta
   try {
@@ -37,9 +29,7 @@ app.get("/guitars", async (req, res) => {
   }
 });
 //crear un endpoint para el usuario que permita obtener todos los usuarios de la base de datos
-
 app.get("/users", async (req, res) => {
-  //req y res peticion y respuesta
   try {
     const users = await User.find({}); //busca todos los usuarios
     return res.status(200).json({ users }); //devuelve el estado 200 y los usuarios
@@ -51,8 +41,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
-//crear un endpoint para el usuario que permita crear un nuevo usuario en la base de datos
-
+/*
 app.post("/users/create", async (req, res) => {
   const { username, email, password } = req.body;
   try {
@@ -79,8 +68,8 @@ app.post("/users/create", async (req, res) => {
     });
   }
 });
-
-
+*/
+/*
 app.post("/users/iniciar-sesion", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -121,7 +110,8 @@ app.post("/users/iniciar-sesion", async (req, res) => {
     });
   }
 });
-
+*/
+/*
 app.get("/users/verificar-usuario", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
@@ -133,7 +123,7 @@ app.get("/users/verificar-usuario", auth, async (req, res) => {
     });
   }
 });
-
+*/
 //crear una guitarra
 
 app.post("/guitars", async (req, res) => {
@@ -193,6 +183,7 @@ app.delete("/guitars/:id", async (req, res) => {
 
 //Crear un endpoint para actualuzar un documento y tambien agregar un nuero request
 //en la coleccion de usuarios
+/*
 app.put("/users/:id", auth, async (req, res) => {
   const { username, email, password } = req.body;
   try {
@@ -222,13 +213,9 @@ app.put("/users/:id", auth, async (req, res) => {
     });
   }
 });
+*/
 
-
-
-//crear un endpoint para el usuario permita borrar un documento de la bd y tambien
-//agregar un nuevo request en l coleccion de usuarios
 
 app.listen(PORT, () => {
-  //servidor en modo escucha
-  console.log("Servidor corriendo en el puerto" + PORT); //inicia el servidor
-}); //ME ASEGURO QUE SIEMPRE EXISTA UN PUERTO DONDE CORRA
+  console.log("Servidor corriendo en el puerto" + PORT); 
+}); 
